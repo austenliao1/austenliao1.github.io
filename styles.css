@@ -246,6 +246,14 @@ h1 {
 .paper-list {
   text-indent: 10px;
 }
+.paper-list h4 {
+  margin-block-end: 0px;
+}
+
+.paper-list p {
+    margin-block-start: 0.4em;
+    margin-block-end: 0.4em;
+  }
 
 /* Default link style */
 a {
