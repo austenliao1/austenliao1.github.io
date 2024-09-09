@@ -1,0 +1,14 @@
+outputs/cathedral.jpg, green: 2 5, red: 3 12 
+outputs/church.jpg, green: 4 25, red: -4 58 
+outputs/emir.jpg, green: 23 50, red: 41 106 
+outputs/harvesters.jpg, green: 17 59, red: 14 123 
+outputs/icon.jpg, green: 17 40, red: 23 90 
+outputs/lady.jpg, green: 9 56, red: 12 119 
+outputs/melons.jpg, green: 9 80, red: 13 177 
+outputs/monastery.jpg, green: 2 -3, red: 2 3 
+outputs/onion_church.jpg, green: 28 51, red: 36 108 
+outputs/sculpture.jpg, green: -11 33, red: -27 140 
+outputs/self_portrait.jpg, green: 29 78, red: 37 175 
+outputs/three_generations.jpg, green: 17 54, red: 11 113 
+outputs/tobolsk.jpg, green: 3 3, red: 3 7 
+outputs/train.jpg, green: 7 41, red: 32 85 

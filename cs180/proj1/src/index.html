@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Gallery</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .gallery-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .gallery-item {
+            width: 30%;
+            margin-bottom: 20px;
+            background-color: white;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .description {
+            font-weight: bold;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        @media (max-width: 768px) {
+            .gallery-item {
+                width: 48%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .gallery-item {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<h1>CS 180 Project 1 </h1>
+
+<p> For this project, my task was to recreate these color photographs originally captured by Prokudin-Gorskii. My strategy for this was to take the same photograph with blue, green, and red color filters and then stack the photos on top of each other to create a fully-colored image. </p>
+
+<h3> Implementation Details </h3>
+
+<p> The original files that we used are in the format of a picture's three RGB channels stacked vertically on top of each other. The method I used for creating these colored images is described as follows.</p>
+
+<h3> Preprocessing </h3>
+
+<p> First, we slice the input image into the three color channels simply by slicing the image vertically into equal parts, separating the three channels from each other. I then worked on aligning the red and green color channels with the blue color channel. This required implementing a function that would take two images and find the optimal shifting of one image onto the other, with the goal of maximizing the two images' structural similarity index. </p>
+
+<h3> Naive Implementation </h3>
+
+<p> For the naive implementation (for lower-resolution images) of this function, I searched in the range of [-10, 10] in both vertical and horizontal axes for the optimal translation of the shift image in order to maximize its structural similarity with the target image.</p>
+
+<h3> General Implementation </h3>
+
+<p> However, for higher resolution images, of this function, it is not feasible to naively search a useful range of potential image shifts, due to the increased pixel density. Instead, I utilized an image pyramid strategy. Shortly put, we construct an image pyramid, or a sequence of images consisting of consecutively lower and lower resolutions of the original high-resolution image, for each color channel. Once each channel's pyramid is created, I run the naive implementation on the lowest-resolution image to find the optimal shift values. I then iteratively descend the pyramid, using the previous optimal shift values for lower-resolution images as estimates to inform the ranges I search on higher-resolution images, as I can now narrow my search space to be centered around the optimal translation computed in the previous iteration. This algorithm will efficiently find the optimal alignment even for large .tif images, for which it takes about 5-6 minutes per image.</p>
+
+<h1>Photograph Gallery</h1>
+
+<div class="gallery-container">
+    <div class="gallery-item">
+        <div class="description">Cathedral</div>
+        <img src="../outputs/cathedral.jpg" alt="Cathedral">
+        <div class="description">Green: (2, 5), Red: (3, 12)</div>
+    </div>
+    <div class="gallery-item">
+        <div class="description">Church</div>
+        <img src="../outputs/church.jpg" alt="Church">
+        <div class="description">Green: (4, 25), Red: (-4, 58)</div>
+    </div>
+    <div class="gallery-item">
+        <div class="description">Emir</div>
+        <img src="../outputs/emir.jpg" alt="Emir">
+        <div class="description">Green: (23, 50), Red: (41, 106)</div>
+    </div>
+    <div class="gallery-item">
+        <div class="description">Harvesters</div>
+        <img src="../outputs/harvesters.jpg" alt="Harvesters">
+        <div class="description">Green: (17, 59), Red: (14, 123)</div>
+    </div>
+    <div class="gallery-item">
+        <div class="description">Icon</div>
+        <img src="../outputs/icon.jpg" alt="Icon">
+        <div class="description">Green: (17, 40), Red: (23, 90)</div>
+    </div>
+    <div class="gallery-item">
+        <div class="description">Lady</div>
+        <img src="../outputs/lady.jpg" alt="Lady">
+        <div class="description">Green: (9, 56), Red: (12, 119)</div>
+    </div>
+    <div class="gallery-item">
+        <div class="description">Melons</div>
+        <img src="../outputs/melons.jpg" alt="Melons">
+        <div class="description">Green: (9, 80), Red: (13, 177)</div>
+    </div>
+    <div class="gallery-item">
+        <div class="description">Monastery</div>
+        <img src="../outputs/monastery.jpg" alt="Monastery">
+        <div class="description">Green: (2, -3), Red: (2, 3)</div>
+    </div>
+    <div class="gallery-item">
+        <div class="description">Onion Church</div>
+        <img src="../outputs/onion_church.jpg" alt="Onion Church">
+        <div class="description">Green: (28, 51), Red: (36, 108)</div>
+    </div>
+    <div class="gallery-item">
+        <div class="description">Sculpture</div>
+        <img src="../outputs/sculpture.jpg" alt="Sculpture">
+        <div class="description">Green: (-11, 33), Red: (-27, 140)</div>
+    </div>
+    <div class="gallery-item">
+        <div class="description">Self Portrait</div>
+        <img src="../outputs/self_portrait.jpg" alt="Self Portrait">
+        <div class="description">Green: (29, 78), Red: (37, 175)</div>
+    </div>
+    <div class="gallery-item">
+        <div class="description">Three Generations</div>
+        <img src="../outputs/three_generations.jpg" alt="Three Generations">
+        <div class="description">Green: (17, 54), Red: (11, 113)</div>
+    </div>
+    <div class="gallery-item">
+        <div class="description">Tobolsk</div>
+        <img src="../outputs/tobolsk.jpg" alt="Tobolsk">
+        <div class="description">Green: (3, 3), Red: (3, 7)</div>
+    </div>
+    <div class="gallery-item">
+        <div class="description">Train</div>
+        <img src="../outputs/train.jpg" alt="Train">
+        <div class="description">Green: (7, 41), Red: (32, 85)</div>
+    </div>
+</div>
+
+</body>
+</html>
