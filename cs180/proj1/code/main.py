@@ -8,6 +8,7 @@ import skimage as sk
 import skimage.io as skio
 import time
 
+# import from utils file
 from utils import construct_pyramid, align
 
 # name of the input file
@@ -28,6 +29,7 @@ filenames = [
     "train.tif"
 ]
 
+# iterate through file names
 for imname in filenames:
     pic_name = imname.split(".")[0]
 
@@ -69,9 +71,6 @@ for imname in filenames:
     g_opt_x, g_opt_y, ag = align(g_pyramid, b_pyramid)
     r_opt_x, r_opt_y, ar = align(r_pyramid, b_pyramid)
     
-    # assert g_opt_x == r_opt_x
-    # assert g_opt_y == r_opt_y
-    
     # create a color image
     im_out = np.dstack([ar, ag, b])
 
@@ -79,6 +78,7 @@ for imname in filenames:
     fname = f'../outputs/{pic_name}.jpg'
     im_out_uint8 = sk.img_as_ubyte(im_out)
     
+    # log the images and their shifts
     with open("../outputs/shifts.txt", "a") as log_file:
         log_file.write(f"{fname}, green: {g_opt_x} {g_opt_y}, red: {r_opt_x} {r_opt_y} \n")
 
@@ -86,6 +86,7 @@ for imname in filenames:
 
     print("duration: ", end_time - start_time)
 
+    # save image
     skio.imsave(fname, im_out_uint8)
 
     # display the image

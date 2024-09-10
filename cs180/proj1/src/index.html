@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Gallery</title>
+    <title>Project 1 - Coloring the Prokudin-Gorskii Collection</title>
 
     <style>
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             margin: 0;
-            padding: 20px;
+            padding: 160px;
+            padding-top: 50px;
         }
 
         .gallery-container {
@@ -57,9 +58,9 @@
 </head>
 <body>
 
-<h1>CS 180 Project 1 </h1>
+<h1>CS 180 Project 1 - Coloring the Prokudin-Gorskii Collection</h1>
 
-<p> For this project, my task was to recreate these color photographs originally captured by Prokudin-Gorskii. My strategy for this was to take the same photograph with blue, green, and red color filters and then stack the photos on top of each other to create a fully-colored image. </p>
+<p> For this project, my task was to color these photographs originally captured by Prokudin-Gorskii. My strategy for this was to take the same photograph with blue, green, and red color filters and then stack the photos on top of each other to create a fully-colored image. </p>
 
 <h3> Implementation Details </h3>
 
@@ -67,17 +68,22 @@
 
 <h3> Preprocessing </h3>
 
-<p> First, we slice the input image into the three color channels simply by slicing the image vertically into equal parts, separating the three channels from each other. I then worked on aligning the red and green color channels with the blue color channel. This required implementing a function that would take two images and find the optimal shifting of one image onto the other, with the goal of maximizing the two images' structural similarity index. </p>
+<p> First, we slice the input image into the three color channels simply by slicing the image vertically into equal parts, separating the three channels from each other. Afterward, I cropped 15% off of each side of each image. </p>
+
+<div class="gallery-container">
+    <div class="input-gallery-item">
+        <img src="../outputs/input_cathedral.jpg" alt="Cathedral">
+    </div>
+    <div class="input-gallery-item">
+        <img src="../outputs/input_monastery.jpg" alt="Monastery">
+    </div>
+</div>
 
 <h3> Naive Implementation </h3>
 
+<p> I then worked on aligning the red and green color channels with the blue color channel. This required implementing a function that would take two images and find the optimal shifting of one image onto the other, with the goal of maximizing the two images' structural similarity index. </p>
+
 <p> For the naive implementation (for lower-resolution images) of this function, I searched in the range of [-10, 10] in both vertical and horizontal axes for the optimal translation of the shift image in order to maximize its structural similarity with the target image.</p>
-
-<h3> General Implementation </h3>
-
-<p> However, for higher resolution images, of this function, it is not feasible to naively search a useful range of potential image shifts, due to the increased pixel density. Instead, I utilized an image pyramid strategy. Shortly put, we construct an image pyramid, or a sequence of images consisting of consecutively lower and lower resolutions of the original high-resolution image, for each color channel. Once each channel's pyramid is created, I run the naive implementation on the lowest-resolution image to find the optimal shift values. I then iteratively descend the pyramid, using the previous optimal shift values for lower-resolution images as estimates to inform the ranges I search on higher-resolution images, as I can now narrow my search space to be centered around the optimal translation computed in the previous iteration. This algorithm will efficiently find the optimal alignment even for large .tif images, for which it takes about 5-6 minutes per image.</p>
-
-<h1>Photograph Gallery</h1>
 
 <div class="gallery-container">
     <div class="gallery-item">
@@ -85,6 +91,25 @@
         <img src="../outputs/cathedral.jpg" alt="Cathedral">
         <div class="description">Green: (2, 5), Red: (3, 12)</div>
     </div>
+    <div class="gallery-item">
+        <div class="description">Monastery</div>
+        <img src="../outputs/monastery.jpg" alt="Monastery">
+        <div class="description">Green: (2, -3), Red: (2, 3)</div>
+    </div>
+    <div class="gallery-item">
+        <div class="description">Tobolsk</div>
+        <img src="../outputs/tobolsk.jpg" alt="Tobolsk">
+        <div class="description">Green: (3, 3), Red: (3, 7)</div>
+    </div>
+</div>
+
+<h3> General Implementation </h3>
+
+<p> However, for higher resolution images, of this function, it is not feasible to naively search a useful range of potential image shifts, due to the increased pixel density. Instead, I utilized an image pyramid strategy. Shortly put, we construct an image pyramid, or a sequence of images consisting of consecutively lower and lower resolutions of the original high-resolution image, for each color channel. I stop appending images once my images become less than 64 pixels in height. </p>
+    
+<p> Once each channel's pyramid is created, I run the naive implementation on the lowest-resolution image to find the optimal shift values. I then iteratively descend the pyramid, using the previous optimal shift values for lower-resolution images as estimates to inform the ranges I search on higher-resolution images, as I can now narrow my search space to be centered around the optimal translation computed in the previous iteration. This algorithm will efficiently find the optimal alignment even for large .tif images, for which it takes about 5-6 minutes per image.</p>
+
+<div class="gallery-container">
     <div class="gallery-item">
         <div class="description">Church</div>
         <img src="../outputs/church.jpg" alt="Church">
@@ -116,11 +141,6 @@
         <div class="description">Green: (9, 80), Red: (13, 177)</div>
     </div>
     <div class="gallery-item">
-        <div class="description">Monastery</div>
-        <img src="../outputs/monastery.jpg" alt="Monastery">
-        <div class="description">Green: (2, -3), Red: (2, 3)</div>
-    </div>
-    <div class="gallery-item">
         <div class="description">Onion Church</div>
         <img src="../outputs/onion_church.jpg" alt="Onion Church">
         <div class="description">Green: (28, 51), Red: (36, 108)</div>
@@ -139,11 +159,6 @@
         <div class="description">Three Generations</div>
         <img src="../outputs/three_generations.jpg" alt="Three Generations">
         <div class="description">Green: (17, 54), Red: (11, 113)</div>
-    </div>
-    <div class="gallery-item">
-        <div class="description">Tobolsk</div>
-        <img src="../outputs/tobolsk.jpg" alt="Tobolsk">
-        <div class="description">Green: (3, 3), Red: (3, 7)</div>
     </div>
     <div class="gallery-item">
         <div class="description">Train</div>
