@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project 2 - Fun with Filters and Frequencies</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 160px;
+            padding-top: 50px;
+        }
+
+        .gallery-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .gallery-item {
+            width: 30%;
+            margin-bottom: 20px;
+            background-color: white;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .description {
+            font-weight: bold;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        @media (max-width: 768px) {
+            .gallery-item {
+                width: 48%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .gallery-item {
+                width: 100%;
+            }
+        }
+
+        .image-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center; /* Center items in the row */
+            gap: 10px; /* Space between grid items */
+            padding: 10px;
+        }
+
+        .grid-item {
+            flex: 0 1 200px; /* Allow items to shrink, set a base width */
+        }
+
+        .grid-item img {
+            width: 100%; /* Make images responsive */
+            height: auto; /* Maintain aspect ratio */
+            border-radius: 8px; /* Optional: rounded corners */
+        }
+
+        .caption {
+            margin-top: 5px; /* Space between image and caption */
+            font-size: 14px; /* Caption font size */
+            color: #555; /* Caption text color */
+        }
+    </style>
+</head>
+<body>
+
+<h1>CS 180 Project 2 - Fun with Filters and Frequencies</h1>
+
+<p> For this project, my task was to color these photographs originally captured by Prokudin-Gorskii. My strategy for this was to take the same photograph with blue, green, and red color filters and then stack the photos on top of each other to create a fully-colored image. </p>
+
+<h2> Part 1 - Fun with Filters </h2>
+
+<h3> 1.1 - Finite Difference Operator </h3>
+
+The gradient magnitude operation tells us generally how steep our gradient in at every pixel (in this case, how drastically our pixels change in brightness). For this operation, we take the partial derivatives of the image in the x and y directions, and we obtain their overall magnitude by taking the square root of the sum of their squares. The result of this operation is a generally accurate contour over the edges of the photograph.
+
+<div class="image-grid">
+    <div class="grid-item">
+        <img src="../outputs/dx.png" alt="Image 1" style="width: 250px;">
+        <div class="caption">partial derivative dx</div>
+    </div>
+    <div class="grid-item">
+        <img src="../outputs/dy.png" alt="Image 2" style="width: 250px;">
+        <div class="caption">partial derivative dy</div>
+    </div>
+    <div class="grid-item">
+        <img src="../outputs/grad_mag.png" alt="Image 2" style="width: 250px;">
+        <div class="caption">gradient magnitude</div>
+    </div>
+    <div class="grid-item">
+        <img src="../outputs/grad_mag_binarized.png" alt="Image 2" style="width: 250px;">
+        <div class="caption">gradient magnitude binarized</div>
+    </div>
+</div>
+
+<h3> 1.2 -  Derivative of Gaussian (DoG) Filter </h3>
+
+We show in this section that we can blur an image by convolving it with a 2D Gaussian filter.
+<div class="image-grid">
+    <div class="grid-item">
+        <img src="../outputs/blurred_dx.png" alt="Image 1" style="width: 250px;">
+        <div class="caption">blurred partial derivative dx</div>
+    </div>
+    <div class="grid-item">
+        <img src="../outputs/blurred_dy.png" alt="Image 2" style="width: 250px;">
+        <div class="caption">blurred partial derivative dy</div>
+    </div>
+    <div class="grid-item">
+        <img src="../outputs/blurred_grad_mag.png" alt="Image 2" style="width: 250px;">
+        <div class="caption">blurred gradient magnitude</div>
+    </div>
+    <div class="grid-item">
+        <img src="../outputs/blurred_grad_mag_binarized.png" alt="Image 2" style="width: 222px;">
+        <div class="caption">blurred gradient magnitude binarized</div>
+    </div>
+</div>
+
+Alternatively, we can blur the image by taking the partial derivatives of the Gaussian as well. We do this by convolving our Gaussian filter with our dx and dy operators. When we take the gradient magnitude of the resulting two filters and convolve our image with it, we get a practically identical result.
+
+<div class="image-grid">
+    <div class="grid-item">
+        <img src="../outputs/DoG_x.png" alt="Image 1" style="width: 340px;">
+        <div class="caption">partial derivative of gaussian (x)</div>
+    </div>
+    <div class="grid-item">
+        <img src="../outputs/DoG_y.png" alt="Image 2" style="width: 300px;">
+        <div class="caption">partial derivative of gaussian (y)</div>
+    </div>
+    <div class="grid-item">
+        <img src="../outputs/DoG_binarized.png" alt="Image 2" style="width: 272px;">
+        <div class="caption">same image!</div>
+    </div>
+</div>
+
+<h2> Part 2 - Fun with Frequencies! </h2>
+
+<h3> 2.1 - Image "Sharpening" </h3>
+
+For this section, I was tasked with writing code that could "sharpen" an image. The process for sharpening an image involves isolating the image's high frequencies and adding them back to the original image, scaled by some multiplier. The isolation of an image's high frequencies is done by first isolating the image's low frequencies (through blurring, or convolving with a 2D Gaussian filter) and then subtracting the result from the original image.
+
+I did this first for an image of the Taj Mahal:
+<div class="image-grid">
+    <div class="grid-item">
+        <img src="../outputs/taj.jpg" alt="Image 1" style="width: 350px;">
+        <div class="caption">original</div>
+    </div>
+    <div class="grid-item">
+        <img src="../outputs/taj_sharpened.jpg" alt="Image 2" style="width: 350px;">
+        <div class="caption">alpha = 1</div>
+    </div>
+    <div class="grid-item">
+        <img src="../outputs/taj_sharpened_overkill.jpg" alt="Image 2" style="width: 350px;">
+        <div class="caption">alpha = 5</div>
+    </div>
+</div>
+
+I also explored how this sharpening procedure would perform on this very blurry picture of an eagle.
+<div class="image-grid">
+    <div class="grid-item">
+        <img src="../outputs/blurry_eagle.jpg" alt="Image 1" style="width: 350px;">
+        <div class="caption">original</div>
+    </div>
+    <div class="grid-item">
+        <img src="../outputs/fixed_eagle.jpg" alt="Image 2" style="width: 350px;">
+        <div class="caption">alpha = 1</div>
+    </div>
+    <div class="grid-item">
+        <img src="../outputs/overkill_eagle.jpg" alt="Image 2" style="width: 350px;">
+        <div class="caption">alpha = 5</div>
+    </div>
+</div>
+
+
+<h3> 2.2 - Hybrid Images</h3>
+
+For this section, I worked on hybridizing images. A hybrid image is effectively one that displays one object when viewed from far away and a different object when viewed up close. This is achieved by isolating the low frequencies (through blurring) of the image that we want to perceive from far away and the high frequencies (through techniques similar to the previous part).
+
+First, I tried creating a hybrid of Derek and Nutmeg. This image looks like Derek from far away but Nutmeg up close. We can tell that we maintained the low frequencies of Derek (hence we can see his silhouette from far away) and the high frequencies of Nutmeg (we can see the intricate whiskers and fur patterns when we stare up close).
+<div class="image-grid">
+    <div class="grid-item">
+        <img src="../outputs/DerekPicture.jpg" alt="Image 1" style="width: 250px;">
+        <div class="caption">derek</div>
+    </div>
+    <div class="grid-item">
+        <img src="../outputs/nutmeg.jpg" alt="Image 2" style="width: 465px;">
+        <div class="caption">nutmeg</div>
+    </div>
+    <div class="grid-item">
+        <img src="../outputs/dermeg.png" alt="Image 2" style="width: 520px;">
+        <div class="caption">#dermeg</div>
+    </div>
+</div>
+
+Shown below are the frequency analyses of the original Derek, original Nutmeg, low frequency Derek, high frequency Nutmeg, and the hybrid image.
+
+<div class="image-grid">
+    <div class="grid-item">
+        <img src="../outputs/derek_freq.png" alt="Image 1" style="width: 200px;">
+        <div class="caption">derek frequencies</div>
+    </div>
+    <div class="grid-item">
+        <img src="../outputs/nutmeg_freq.png" alt="Image 2" style="width: 200px;">
+        <div class="caption">nutmeg frequencies</div>
+    </div>
+    <div class="grid-item">
+        <img src="../outputs/derek_freq_low.png" alt="Image 2" style="width: 200px;">
+        <div class="caption">derek low frequencies</div>
+    </div>
+    <div class="grid-item">
+        <img src="../outputs/nutmeg_freq_high.png" alt="Image 2" style="width: 200px;">
+        <div class="caption">nutmeg high frequencies</div>
+    </div>
+    <div class="grid-item">
+        <img src="../outputs/dermeg_freq.png" alt="Image 2" style="width: 200px;">
+        <div class="caption">dermeg frequencies</div>
+    </div>
+</div>
+
+I got really ambitious and tried to create a hybrid image of two very influential figures in my life (with very similar names): Stephen Curry and Kirby. As evidenced by the images below, I was not able to do right by my ambition. If I had to guess, the failure probably comes from the fact that Kirby is so wide that you can see him even when looking up close. You can still see Stephen Curry very well up-close too (and not as much from far away).
+<div class="image-grid">
+    <div class="grid-item">
+        <img src="../outputs/steph_curry.jpg" alt="Image 1" style="width: 400px;">
+        <div class="caption">the goat of basketball</div>
+    </div>
+    <div class="grid-item">
+        <img src="../outputs/kirby.jpg" alt="Image 2" style="width: 300px;">
+        <div class="caption">the goat of video games</div>
+    </div>
+    <div class="grid-item">
+        <img src="../outputs/curby.png" alt="Image 2" style="width: 440px;">
+        <div class="caption">paralysis demon</div>
+    </div>
+</div>
+
+In the spirit of running out of ideas at 11PM, I also tried creating a hybrid image of Professor Efros and Professor Klein:
+<div class="image-grid">
+    <div class="grid-item">
+        <img src="../outputs/klein.jpg" alt="Image 1" style="width: 350px;">
+        <div class="caption">klein</div>
+    </div>
+    <div class="grid-item">
+        <img src="../outputs/efros.jpeg" alt="Image 2" style="width: 306px;">
+        <div class="caption">efros</div>
+    </div>
+    <div class="grid-item">
+        <img src="../outputs/eflein.png" alt="Image 2" style="width: 653px;">
+        <div class="caption">professor hybrid</div>
+    </div>
+</div>
+
+<h2> Multi-resolution Blending and the Oraple journey </h2>
+
+This section revolved around carrying out multi-resolution blending, or smoothly blending two images together across a boundary.
+
+<h3> 2.3 - Gaussian and Laplacian Stacks </h3>
+
+For this section specifically, I implemented functions for constructing Gaussian and Laplacian stacks, which will aid in multiresolution blending in the next section. A Gaussian stack consists of increasingly blurred versions of the image (in other words, consecutively stricter low-pass filters), and the Laplacian stack is constructed by subtracting consecutive layers of the Gaussian stack from each other, effectively representing a set of bandpass filters.
+
+<h4> Gaussian Stacks: </h4>
+<div class="image-grid">
+    <div class="grid-item">
+        <img src="../outputs/gau_apples.jpg" alt="Image 1" style="width: 600px;">
+        <div class="caption">gaussian stack of apples</div>
+    </div>
+    <div class="grid-item">
+        <img src="../outputs/gau_oranges.jpg" alt="Image 2" style="width: 600px;">
+        <div class="caption">gaussian stack of oranges</div>
+    </div>
+</div>
+
+<h4> Laplacian Stacks: </h4>
+<div class="image-grid">
+    <div class="grid-item">
+        <img src="../outputs/lap_apples.jpg" alt="Image 1" style="width: 600px;">
+        <div class="caption">laplacian stack of apples</div>
+    </div>
+    <div class="grid-item">
+        <img src="../outputs/lap_oranges.jpg" alt="Image 2" style="width: 600px;">
+        <div class="caption">laplacian stack of oranges</div>
+    </div>
+</div>
+
+<h3> 2.4 - Multiresolution Blending (a.k.a. the oraple!) </h3>
+
+In this section, I utilized the Gaussian and Laplacian stacks to blend images together, using multiresolution blending. 
+
+To make sure my blending was as smooth as possible, I took the liberty of making my Gaussian stack of the mask longer and then only using the blurriest images in the stack.
+
+I first utilized multiresolution blending to create the oraple, a blend between the orange and the apple.
+
+
+<div class="image-grid">
+    <div class="grid-item">
+        <img src="../outputs/apple.jpeg" alt="Image 1" style="width: 300px;">
+        <div class="caption">apple</div>
+    </div>
+    <div class="grid-item">
+        <img src="../outputs/orange.jpeg" alt="Image 2" style="width: 300px;">
+        <div class="caption">orange</div>
+    </div>
+    <div class="grid-item">
+        <img src="../outputs/oraple.png" alt="Image 2" style="width: 300px;">
+        <div class="caption">oraple</div>
+    </div>
+</div>
+
+<div class="image-grid">
+    <div class="grid-item">
+        <img src="../outputs/stacked_apple_spline.jpg" alt="Image 1" style="width: 600px;">
+        <div class="caption">apple spline</div>
+    </div>
+    <div class="grid-item">
+        <img src="../outputs/stacked_orange_spline.jpg" alt="Image 2" style="width: 600px;">
+        <div class="caption">orange spline</div>
+    </div>
+</div>
+
+
+I then tried this on two other examples. The first was a landscape of Kuala Lumpur, the capital of Malaysia, transitioning from day to night. I really like how this one turned out. We can see the transition from sunlight to city light at the boundary.
+
+<div class="image-grid">
+    <div class="grid-item">
+        <img src="../outputs/day.jpg" alt="Image 1" style="width: 350px;">
+        <div class="caption">city day</div>
+    </div>
+
+    <div class="grid-item">
+        <img src="../outputs/night.jpg" alt="Image 2" style="width: 350px;">
+        <div class="caption">city night</div>
+    </div>
+
+    <div class="grid-item">
+        <img src="../outputs/day_night.png" alt="Image 2" style="width: 350px;">
+        <div class="caption">very cool</div>    
+    </div>
+
+</div>
+
+I then tried creating an image of the earth falling into a black hole. This required using a circular mask to pull off.
+
+<div class="image-grid">
+    <div class="grid-item">
+        <img src="../outputs/earth.jpg" alt="Image 1" style="width: 300px;">
+        <div class="caption">earth</div>
+    </div>
+
+    <div class="grid-item">
+        <img src="../outputs/blackhole.jpg" alt="Image 2" style="width: 350px;">
+        <div class="caption">black hole</div>
+    </div>
+
+    <div class="grid-item">
+        <img src="../outputs/HOLYFUCKBEDONEALREADY.png" alt="Image 2" style="width: 350px;">
+        <div class="caption">end of the world</div>
+    </div>
+
+</div>
+
+</body>
+</html>
