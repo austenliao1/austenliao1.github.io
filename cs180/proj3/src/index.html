@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project 3 - Face Morphing</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 160px;
+            padding-top: 50px;
+        }
+
+        .gallery-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .gallery-item {
+            width: 30%;
+            margin-bottom: 20px;
+            background-color: white;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .description {
+            font-weight: bold;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        @media (max-width: 768px) {
+            .gallery-item {
+                width: 48%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .gallery-item {
+                width: 100%;
+            }
+        }
+
+        .image-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center; /* Center items in the row */
+            gap: 10px; /* Space between grid items */
+            padding: 10px;
+        }
+
+        .grid-item {
+            flex: 0 1 200px; /* Allow items to shrink, set a base width */
+        }
+
+        .grid-item img {
+            width: 100%; /* Make images responsive */
+            height: auto; /* Maintain aspect ratio */
+            border-radius: 8px; /* Optional: rounded corners */
+        }
+
+        .caption {
+            margin-top: 5px; /* Space between image and caption */
+            font-size: 14px; /* Caption font size */
+            color: #555; /* Caption text color */
+        }
+    </style>
+</head>
+<body>
+
+<h1>CS 180 Project 3 - Face Morphing</h1>
+
+<p> This project was centered around warping and morphing different faces into each other. </p>
+
+<h2> Part 1 - Defining Correspondences </h2>
+
+<div class="image-grid">
+    <div class="grid-item">
+        <img src="../assets/bron_tri.jpg" alt="Image 1" style="width: 400px;">
+        <div class="caption">lebron triangulated</div>
+    </div>
+    <div class="grid-item">
+        <img src="../assets/goat_tri.jpg" alt="Image 2" style="width: 400px;">
+        <div class="caption">the goat triangulated</div>
+    </div>
+</div>
+
+<h2> Part 2 - Computing the "Mid-Way Face" </h2>
+
+This entailed computing the midpoints of all corresponding points, in order to get the triangulation structure of the mid-way face. Then, I warped both Steph and Lebron onto the new mid-way face triangulation. For each face, I did this by iterating through each triangle,  inverse warping it onto its corresponding triangle in the mid-way face, and then interpolating to get the colors of each pixel in the new triangle. This successfully moved the colors from the original images onto the mid-way face. From there, I took my two warped basketball players and blended their colors evenly.
+<div class="image-grid">
+    <div class="grid-item">
+        <img src="../assets/goat.jpg" alt="Image 1" style="width: 250px;">
+        <div class="caption">original steph</div>
+    </div>
+    <div class="grid-item">
+        <img src="../assets/mickey.jpg" alt="Image 2" style="width: 250px;">
+        <div class="caption">original bron</div>
+    </div>
+    <div class="grid-item">
+        <img src="../assets/midway_face.jpg" alt="Image 2" style="width: 250px;">
+        <div class="caption">mid-way face</div>
+    </div>
+</div>
+
+<h2> Part 3 - The Morph Sequence </h2>
+
+To create a GIF describing the entire morph from Lebron James to Our Glorious King Wardell Stephen Curry the 2nd, I created 45 morph images, linearly interpolating both warp_frac and dissolve_frac from 0 to 1. The result is below. This guy went from a role player to a top 3 NBA player of all time - give this guy the Most Improved Player award already.
+
+<div class="image-grid">
+    <div class="grid-item">
+        <img src="../assets/morph_fast.gif" alt="Image 1" style="width: 300px;">
+        <div class="caption">morphing gif (watch a basketball player improve in real time)</div>
+    </div>
+</div>
+
+<h2> Part 4 - The "Mean Face" of a Population </h2>
+
+For this exercise, I chose to create the mean face of the FEI dataset, a dataset of Brazilian faces. I calculated the mean face by calculating the mean points for each point of correspondence, getting a mean face from not just two images, but rather an entire set of ~400  (one smiling picture and one neutral picture each for 200 unique faces). I then warped all of the original faces onto this mean face, and then I blended their textures to get the average face. From there, I warped Steph Curry onto this mean face, and then I warped the mean face onto Steph Curry.
+
+<h2> Before </h2>
+
+<div class="image-grid">
+    <div class="grid-item">
+        <img src="../assets/fei_unwarped_0.jpg" alt="Image 1" style="width: 250px;">
+    </div>
+    <div class="grid-item">
+        <img src="../assets/fei_unwarped_1.jpg" alt="Image 2" style="width: 250px;">
+    </div>
+    <div class="grid-item">
+        <img src="../assets/fei_unwarped_2.jpg" alt="Image 2" style="width: 250px;">
+    </div>
+    <div class="grid-item">
+        <img src="../assets/fei_unwarped_3.jpg" alt="Image 2" style="width: 250px;">
+    </div>
+</div>
+
+<h2>After</h2>
+<div class="image-grid">
+    <div class="grid-item">
+        <img src="../assets/fei_warped_0.jpg" alt="Image 1" style="width: 250px;">
+    </div>
+    <div class="grid-item">
+        <img src="../assets/fei_warped_1.jpg" alt="Image 2" style="width: 250px;">
+    </div>
+    <div class="grid-item">
+        <img src="../assets/fei_warped_2.jpg" alt="Image 2" style="width: 250px;">
+    </div>
+    <div class="grid-item">
+        <img src="../assets/fei_warped_3.jpg" alt="Image 2" style="width: 250px;">
+    </div>
+</div>
+
+<h2>Warping with Steph Curry</h2>
+<div class="image-grid">
+    <div class="grid-item">
+        <img src="../assets/average_face.jpg" alt="Image 1" style="width: 300px;">
+        <div class="caption">average face of the FEI dataset</div>
+    </div>
+    <div class="grid-item">
+        <img src="../assets/avg_to_goat.jpg" alt="Image 2" style="width: 300px;">
+        <div class="caption">the average FEI face warped to the goat's face</div>
+    </div>
+    <div class="grid-item">
+        <img src="../assets/goat_to_avg.jpg" alt="Image 2" style="width: 300px;">
+        <div class="caption">the goat's face warped to the average FEI face</div>
+    </div>
+</div>
+
+<h2> Part 5 - Caricatures: Extrapolating from the Mean </h2>
+
+For this caricature, I took my Steph Curry and my average FEI face and, instead of interpolating between the two, I extrapolated and tried setting alpha to be a negative value (instead of something between 0 and 1).
+
+<div class="image-grid">
+    <div class="grid-item">
+        <img src="../assets/caricature_05.jpg" alt="Image 1" style="width: 250px;">
+        <div class="caption">alpha=-0.5</div>
+    </div>
+    <div class="grid-item">
+        <img src="../assets/caricature_10.jpg" alt="Image 2" style="width: 250px;">
+        <div class="caption">alpha=-1.0</div>
+    </div>
+    <div class="grid-item">
+        <img src="../assets/caricature_15.jpg" alt="Image 2" style="width: 250px;">
+        <div class="caption">alpha=-1.5</div>
+    </div>
+    <div class="grid-item">
+        <img src="../assets/caricature_199.jpg" alt="Image 2" style="width: 250px;">
+        <div class="caption">alpha=-1.99</div>
+    </div>
+</div>
+
+<h2> Bells & Whistles - Gender Change</h2>
+
+For my bells and whistles, I applied a gender change to my favorite basketball player to summon our glorious queen, Wardell Stephanie Curry II. I did this by isolating about 66 female faces from the FEI dataset and calculating their average face. I then applied a morph (and played with the hyperparameters like warp_frac and dissolve_frac) until I found a picture that seemed to resemble both goat-like and female-presenting features.
+
+<div class="image-grid">
+    <div class="grid-item">
+        <img src="../assets/glorious_queen.jpg" alt="Image 1" style="width: 250px;">
+        <div class="caption">glorious queen</div>
+    </div>
+</div>
+
+
+</body>
+</html>
