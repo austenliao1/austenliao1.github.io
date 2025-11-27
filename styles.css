@@ -193,6 +193,7 @@ nav {
 .content {
   max-width: 800px;
   margin: 0 auto;
+  padding-bottom: 4em;
 }
 
 .content p {
@@ -301,4 +302,16 @@ a:active {
 
 .social-links img:hover {
   transform: scale(1.1);
+}
+
+/* Add spacing between list items */
+section ul li {
+  margin-bottom: 1em;
+  line-height: 1.6;
+}
+
+/* Standardize line spacing throughout the About section */
+#about p,
+#about ul li {
+  line-height: 1.6;
 }
